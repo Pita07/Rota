@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        /* Header row sizing */
+        thead tr {
+            height: 40px;
+        }
+
+        thead th[rowspan="2"] {
+            height: 80px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        /* Editable cells */
+        td[contenteditable="true"] {
+            vertical-align: top;
+            white-space: pre-wrap;
+        }
+
+        td[contenteditable][data-empty]:before {
+            content: "━━━━";
+            color: #070707;
+            pointer-events: none;
+            margin-right: 6px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<div id="title-wrapper" style="margin-bottom:8px; text-align:left;">
+    <img id="title-image" src="/static/title.png" alt="Task Schedule" style="max-height:120px; display:inline-block; margin:0; vertical-align:middle;">
+    <h2 id="title-text" style="display:none; text-align:left; margin:0;">Task Schedule</h2>
+</div>
+
+<table id="schedule-table"></table>
+
+<script>
+    // If the image fails to load, show the text title instead
+    document.getElementById('title-image').addEventListener('error', function() {
+        this.style.display = 'none';
+        document.getElementById('title-text').style.display = 'block';
+    });
+</script>
+
+<div id ="caption" style="margin-top:12px; font-size:medium; color:#070707;">
+    <p>ᴮ-Bleep</p>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>

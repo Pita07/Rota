@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Schedule</title>
+<font size="40pt">
+<style>
+    table {
+        border-collapse: collapse;
+
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 6px;
+        text-align: center;
+    }
+    /* Thicker vertical separator after each day's PM column */
+    th.day-sep, td.day-sep {
+        border-right: 10px solid black;
+    }
+    /* Thicker vertical separator after the names column */
+    th.name-sep, td.name-sep {
+        border-right: 10px solid black;
+    }
+    /* Thicker horizontal separator after rows (applied to the whole row) */
+    tr.row-sep th, tr.row-sep td {
+        border-bottom: 10px solid black;
+    }
+    th {
+        background-color: #eee;
+    }
+    thead tr {
+        height: 40px;
+    }
+    thead th[rowspan="2"] {
+        height: 80px;
+        vertical-align: middle;
+        text-align: center;
+        /* Ensure header cells that span two rows have the thick bottom border so the separator
+           spans from the very first to the very last column */
+        border-bottom: 10px solid black;
+    }
+    td[contenteditable="true"] {
+        vertical-align: top;
+        white-space: pre-wrap;
+    }
+    /* Alternating row colors for body only; leave header and first (name) column unchanged */
+    tbody tr:nth-child(even) td { background: #CCC; }
+    tbody tr:nth-child(odd) td { background: #FFF; }
+</style>
+</head>
+<body>
+
+<div id="title-wrapper" style="margin-bottom:8px; text-align:left;">
+    <img id="title-image" src="../Assets/title(fs10).png" alt="Task Schedule" style="max-height:120px; display:inline-block; margin:0; vertical-align:middle;">
+    <h2 id="title-text" style="display:none; text-align:left; margin:0;">Task Schedule</h2>
+</div>
+
+<table id="schedule-table"></table>
+
+<script>
+const taskSchedules = {"CC1": [[], ["Iqbal", "Sharon"], [], [], ["Iqbal"], ["Volodymyr"], [], [], ["Iqbal", "Sharon"], ["Iqbal", "Sharon"], [], [], [], ["Iqbal", "Sharon"]], "CB2": [[], [], [], [], [], [], [], [], [], [], [], [], [], []], "CB4": [[], [], [], [], [], [], [], [], [], [], [], [], [], []], "CC4": [[], [], [], [], [], [], [], [], [], [], [], [], [], []], "CC2": [["Ryan", "Alison"], ["Gabriel"], ["Gabriel", "Alison"], ["Gabriel"], ["Gabriel"], ["Gabriel"], ["Gabriel"], ["Gabriel"], ["Gabriel"], ["Gabriel"], [], [], [], []], "CC5": [["Sam"], ["Raiyan", "Alison"], [], [], ["Mark", "Alison"], ["Mark", "Alison"], [], [], ["Liliana", "Alison"], ["Liliana", "Alison"], [], [], [], []], "CC6": [["Dr Elkady", "Alison"], ["Catia"], ["Dr Marcus", "Alison"], ["Catia"], ["Liliana"], ["Charlotte"], ["Dr Marcus"], ["Jamie"], ["Jamie"], ["Jamie"], [], [], [], []], "CC9": [[], [], ["Mark"], ["Aysha"], [], [], ["Dr Alzetani"], ["Dr Alzetani"], [], [], [], [], [], []], "CC10": [["Raiyan"], ["Ellie"], ["Dr Khalil"], ["Mark", "Alison"], ["Sam"], ["Catia"], ["Liliana", "Alison"], ["Liliana", "Alison"], ["Eji"], ["Aysha"], [], [], [], []], "IP Echo": [["Charlotte", "Volodymyr", "Ellie", "Jamie"], ["Eji", "Liliana", "Jamie", "Mark"], ["Aysha", "Ellie", "Jamie", "Eji"], ["Ellie", "Jamie", "Ryan"], ["Aysha", "Volodymyr", "Jamie"], ["Ryan", "Eji", "Jamie", "Ellie"], ["Catia", "Jamie", "Raiyan", "Eji"], ["Catia", "Eji", "Ellie", "Raiyan"], ["Charlotte", "Raiyan", "Aysha", "Ellie"], ["Ryan", "Catia", "Raiyan", "Ellie"], [], [], ["Sam"], []], "CB6": [[], [], ["Dr Henein", "Volodymyr"], ["Dr Henein", "Liliana"], ["Dr Marcus", "Charlotte"], ["Dr Marcus", "Liliana"], ["Dr Henein", "Ryan"], ["Dr Henein", "Ryan"], ["Dr Marcus", "Mark"], [], [], [], [], []], "R": [["Mark"], ["Volodymyr"], ["Charlotte"], ["Volodymyr"], ["Catia"], [], ["Volodymyr"], ["Mark"], [], ["Charlotte"], [], [], [], []], "Analysis": [["Eji", "Aysha", "Liliana"], ["Aysha", "Charlotte", "Ryan"], ["Catia", "Ryan", "Liliana"], ["Raiyan", "Eji", "Charlotte"], ["Eji", "Raiyan", "Ryan"], ["Raiyan", "Aysha"], ["Aysha", "Sam", "Mark"], ["Volodymyr", "Aysha", "Charlotte"], ["Catia", "Ryan"], ["Mark", "Eji"], ["Iqbal"], ["Iqbal"], ["Iqbal"], []], "ECG": [[], [], [], [], [], [], [], [], [], [], [], [], [], []], "SL": [[], [], [], [], ["Ellie"], [], ["Ellie"], [], [], [], [], [], [], []], "MGMT": [["Nick"], ["Nick"], ["Nick"], ["Nick"], ["Nick"], ["Nick"], ["Nick"], ["Nick"], ["Nick"], ["Nick"], [], [], [], []], "Admin": [[], [], [], [], [], [], [], [], [], [], [], [], [], []]};
+const originalWorkerOrder = ["Nick", "Gabriel", "Liliana", "Charlotte", "Eji", "Mark", "Volodymyr", "Catia", "Raiyan", "Ryan", "Aysha", "Jamie", "Priya", "Ellie", "Sam", "Iqbal", "Sharon", "Dawn", "Karam", "Sylvia", "Shamsun", "Sumaya", "Alison", "Barbara", "Livy", "Bema", "Anna", "Dr Marcus", "Dr Alzetani", "Dr Henein", "Dr Khalil", "Dr Elkady"];
+const lastPhysioIndex = 16;
+const lastAssistIndex = 26;
+const allPeople = (typeof originalWorkerOrder !== 'undefined' && Array.isArray(originalWorkerOrder) && originalWorkerOrder.length > 0) ? originalWorkerOrder.slice() : ["Nick", "Gabriel", "Liliana", "Charlotte", "Eji", "Mark", "Volodymyr", "Catia", "Raiyan", "Ryan", "Aysha", "Jamie", "Priya", "Ellie", "Sam", "Iqbal", "Sharon", "Dawn", "Karam", "Sylvia", "Shamsun", "Sumaya", "Alison", "Barbara", "Livy", "Bema", "Anna", "Dr Marcus", "Dr Alzetani", "Dr Henein", "Dr Khalil", "Dr Elkady"];
+</script>
+
+<script>
+    document.getElementById('title-image').addEventListener('error', function() {
+        this.style.display = 'none';
+        document.getElementById('title-text').style.display = 'block';
+    });
+</script>
+
+<div id ="caption" style="margin-top:12px; font-size:30pt; color:#070707;">
+    <p>AL - Annual Leave <br> LT - Lieu Time <br> SL - Study Leave <br> ADO - Allocated Day Off <br> MGMT - Management <br> R-Reviewing <br> ᴮ-Bleep <br> ᴰ-Check 3 Crash Trolleys (Defib) + Blood Glucose</p>
+</div>
+
+<div id ="footer" style="margin-top:12px; font-size:35pt; color:#070707; text-align:center;">
+    <p>This Rota is subject to change at short notice. Please check throughout the week.</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

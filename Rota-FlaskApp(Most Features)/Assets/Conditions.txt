@@ -1,0 +1,30 @@
+CC5 only on Monday, Wednesday and Friday							    X
+CC9 only on Tuesday and Thursday							            X
+CC1 Monday pm, Wednesday all day, Friday all day and Sunday pm			X				
+CC1 Wednesday all day needs one physiologist and one assistant/or Dawn	X		
+CC1 other days Iqbal and Sharon when in, if Iqbal off no CC1            X		
+CC2, CC4, CC6 and CC10 Monday to Friday							        X
+CB2 only Monday am							                            x
+CB4 only Tuesday am and Thursday am, only needs one assistant			X
+CB6 Tuesday all day, Wednesday all day, Thursday all day and Friday am	X						
+CB6 needs one doctor, one physiologist and one assistant				X			
+CC2, CC5, CC6 and CC10 needs one physiologist and one assistant			X				
+One assistant can usually assist both CC2 and CC6						X	
+At least 2 physiologists on IP Echo (max 4) Monday to Friday			X				
+At least 1 physiologists on Analysis (max 3) Monday to Friday	        X
+On Friday CC5 physiologist must be a woman                              X
+
+Dr Elkady when in Monday am only		                                X
+Dr Khalil when in Tuesday am only		                                X   
+
+Nick when in MGMT, unless less than 8 physiologists in					X		
+Gabriel when in CC2 only											    X								
+Dr Alzetani does CC9 when Dr Henein is in on Thursday					X		
+Dr Marcus when in CC6 on Thursday am and CB6 on Friday am               X
+							
+One person on Analysis to Check Defib/Blood Glucose							                X
+One person on Analysis to print ICE/triage (ideally a different person)						X	
+One physiologist to hold Bleep Monday to Friday (am and pm) - idealy person on Reviewing	X					
+Mark does CB6 with Dr Alzetani and Dr Marcus (not Dr Henein)							    X
+Volodymyr does CB6 with Dr Henein (not Dr Alzetani and Dr Marcus)	                        X
+Priya is training echo and shadows one physiologist on CC2, CC5, CC6, CC9 or CC10			X											
