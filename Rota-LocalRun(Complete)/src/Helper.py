@@ -8,6 +8,14 @@ def randomize_dict_keys(d):
     new_dict = {k: d[k] for k in keys}
     return new_dict
 
+# Function to find full days where a worker is available
+def full_days(dispo):
+    full_days = []
+    for i in range(0, len(dispo), 2):
+        if dispo[i] == "IN" and dispo[i + 1] == "IN":
+            full_days.append(i)
+    return np.array(full_days)
+
 # Function to reorder all tasks based on a new task order
 def reorder_all(tasks, Doctors, Physiologists, Assistants, new_task_order):
     old_idx = {t: i for i, t in enumerate(tasks)}
@@ -76,13 +84,33 @@ def check_student_leave_days(dispositions, Trainees, physios_in):
     student_leave_days = {trainee: [] for trainee in Trainees}
     # randomize the order of trainees to avoid bias
     rd.shuffle(Trainees)
+
     # determine best days for each trainee to take leave
-    for i in range(2): # 2 student leaves per week
-        for trainee in Trainees:
-            dispo = dispositions[trainee].flatten()
-            # Check if they're in on the day part where physiologists are most available
-            max_physios = physios_in.index(max(physios_in))
-            if dispo[max_physios] == "IN":
-                student_leave_days[trainee].append(max_physios)
-                physios_in[max_physios] -= 1  # Decrease availability for that day part
+    for trainee in Trainees:
+        dispo = dispositions[trainee].flatten()
+        days_available = full_days(dispo)
+        # Try and assign both student leaves in the same day for Priya
+        if trainee == "Priya" and days_available.size > 0:
+            # Check which day has the most physiologists available
+            best_day = -1
+            for day in days_available:
+                if physios_in[day] + physios_in[day + 1] > best_day:
+                    best_day = int(day)
+            student_leave_days[trainee].append(best_day)
+            student_leave_days[trainee].append(best_day + 1)
+            # Decrease availability for that day
+            physios_in[day] -= 1
+            physios_in[day + 1] -= 1  
+        else:
+            for i in range(2): # 2 student leaves per week
+                temp_physios_in = physios_in.copy()  # Copy to avoid modifying the original list
+                while True:
+                    # Check if they're in on the day part where physiologists are most available
+                    max_physios = temp_physios_in.index(max(temp_physios_in))
+                    temp_physios_in[max_physios] = -1  # Temporarily mark this day part as unavailable
+                    if dispo[max_physios] == "IN":
+                        student_leave_days[trainee].append(max_physios)
+                        physios_in[max_physios] -= 1  # Decrease availability for that day part
+                        break
+
     return student_leave_days

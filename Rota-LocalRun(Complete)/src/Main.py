@@ -37,7 +37,7 @@ worker_data_path = root_dir / "Files" / "Data Base.xlsx"
 weekly_data_path = root_dir / "Files" / "Weekly Rota.xlsx"
 women_path = root_dir / "Files" / "Women.txt"
 
-print("Last modified:", time.ctime(os.path.getmtime(worker_data_path)))
+print("Last modified:", time.ctime(os.path.getmtime(worker_data_path)), time.ctime(os.path.getmtime(weekly_data_path)))
 
 # --- Get Worker Data and Worker Dispositions + verifications ---
 worker_data = pd.read_excel(worker_data_path)
@@ -55,6 +55,9 @@ for name in worker_data['Name'].values:
         messagebox.showerror("Error", f"Worker not in Weekly Rota: {name}")
         root.quit()
         exit()
+
+# Switch the names order to the one in the worker data
+names = np.array(worker_data['Name'].values.tolist())
 
 # Ensure 'Cathlab' and 'Pacing' columns are last, they won't be used for task assignment 
 if 'Cathlab' in worker_data.columns and 'Pacing' in worker_data.columns:
@@ -173,11 +176,6 @@ task_schedules = {task: [[] for _ in range(14)] for task in tasks} # Dic: task_n
 
 present_workers = [] #workers in for the day part
 used_workers = [[] for _ in range(14)] #workers already assigned to tasks for each day part
-
-# Priya is gonna be handled later so remove and store her for now 
-priya_abilities = Physiologists.pop("Priya", None)
-priya_disposition = dispositions.pop("Priya", None)
-Trainees.remove("Priya") if "Priya" in Trainees else None
 
 # Check the best days for student leaves
 
@@ -345,7 +343,6 @@ for i in range(14):
                 if len(task_schedules[task][i]) == 0:
                     # Assign any physiologist
                     hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Phys_ord, sorted_tasks)
-                    print("Hey there2")
                 # Assign assistant
                 if len(task_schedules[task][i]) > 0:
                     hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Assist_ord, sorted_tasks)
@@ -541,58 +538,6 @@ for i in range(14):
         if worker in present_workers and worker not in used_workers[i]:
             task_schedules["Admin"][i].append(worker)
             used_workers[i].append(worker)
-    
-
-# Handle Priya assignment
-priya_tasks = tasks[[idx for idx, ability in enumerate(priya_abilities) if ability == 'YES' and tasks[idx] != 'SL']].tolist() # SL will be handled separately
-random_tasks = priya_tasks*2
-rd.shuffle(random_tasks)  # randomize order of Priya's tasks
-random_day_parts = [rd.randint(0,1), rd.randint(0,1)] # for assigning CC9 once on Tuesday or Thursday randomly
-
-# Flag to ensure CC9 special assignment happens only once
-priya_cc9_assigned = False
-
-for i in range(14):
-    day = i // 2
-    part = i % 2
-    if random_tasks == []:
-        # add more tasks if needed
-        random_tasks = priya_tasks*2
-        rd.shuffle(random_tasks)
-    if priya_disposition[day][part] == "IN":
-        if ((day == 1 and part == random_day_parts[0]) or (day == 3 and part == random_day_parts[1])) and not priya_cc9_assigned:  # Tuesday or Thursday
-            if "CC9" in random_tasks and "CC9" in task_schedules and len(task_schedules["CC9"][i]) == 2:  # only assign if task has 2 assigned workers 
-                task_schedules["CC9"][i].append("Priya")
-                random_tasks.remove("CC9")
-                priya_cc9_assigned = True
-                continue
-            else:
-                # if CC9 can't be assigned now, fall through and try normal assignment
-                pass
-        # Try to assign Priya to one of her tasks if possible
-        for task in random_tasks:
-            if task in task_schedules:
-                if len(task_schedules[task][i]) >= 2:  # only assign if task has 2 or more assigned workers (ip Echo can have more than 2)
-                    task_schedules[task][i].append("Priya")
-                    random_tasks.remove(task)
-                    break
-        
-# Choose 1 random day for student leave
-priya_disps = priya_disposition.flatten()
-if priya_disps.tolist().count("IN") > 0:
-    day= rd.randint(0, 6)
-    while priya_disps[day*2] != "IN":
-        day = rd.randint(0, 6)  
-
-    # Assign student leave to Priya and remove from other tasks if assigned
-    task_schedules['SL'][day*2].append("Priya")
-    for t in priya_tasks:
-        if "Priya" in task_schedules[t][day*2]:
-            task_schedules[t][day*2].remove("Priya")
-    task_schedules['SL'][day*2+1].append("Priya")
-    for t in priya_tasks:
-        if "Priya" in task_schedules[t][day*2+1]:
-            task_schedules[t][day*2+1].remove("Priya")
 
 # print rota for debugging
 '''for day_part in range(14):
