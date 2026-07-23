@@ -400,7 +400,7 @@ for i in range(14):
         elif task == "CC9": # only on Monday, Tuesday and Thursday, on Thursday assign Dr Alzetani if Dr Henein is present
             if day == 3:
                 # Assign Dr Alzetani if Dr Henein is present
-                if "Dr Henein" in present_workers:
+                if "Dr Henein" in present_workers and "Dr Alzetani" in present_workers:
                     task_schedules[task][i].append("Dr Alzetani")
                 else:
                     # Assign a physiologist instead
