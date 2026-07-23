@@ -220,7 +220,7 @@ for i in range(14):
     # prioritize CB6 as it needs the 3 workers
     if "CB6" in sorted_tasks:
         sorted_tasks, Doctors_ord, Phys_ord, Assist_ord = hp.prioritize_task(sorted_tasks, Doctors_ord, Phys_ord, Assist_ord, "CB6")
-    # on Friday prioritize CC5 to choose a woman as soon as possible, on Wendsday CC5 is prioritized as it can only be done by Liliana, Charlotte or Raiyan
+    # on Friday prioritize CC5 to choose a woman as soon as possible, on Wendsday CC5 is prioritized as should be done by Liliana, Charlotte or Raiyan
     if day == 4 or day == 2:
         if "CC5" in sorted_tasks:
             sorted_tasks, Doctors_ord, Phys_ord, Assist_ord = hp.prioritize_task(sorted_tasks, Doctors_ord, Phys_ord, Assist_ord, "CC5")
@@ -331,7 +331,7 @@ for i in range(14):
             else:
                 # Assign assistant
                 hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Assist_ord, sorted_tasks)
-        elif task == "CC5": # only on Monday, Wednesday and Friday, on Monday if Raiyan is present he will do CC5, on Wendsday CC5 can only be done by Liliana, Charlotte or Raiyan, Friday needs a woman as physiologist when possible  
+        elif task == "CC5": # only on Monday, Wednesday and Friday, on Monday if Raiyan is present he will do CC5, on Wendsday CC5 should be done by Liliana, Charlotte or Raiyan, Friday needs a woman as physiologist when possible  
             if day == 0:
                 if "Raiyan" in present_workers:
                     task_schedules[task][i].append("Raiyan")
@@ -348,6 +348,9 @@ for i in range(14):
                     choice = rd.choice(possible_workers)
                     task_schedules[task][i].append(choice)
                     used_workers[i].append(choice)
+                else:
+                    # Assign other physiologist
+                    hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Phys_ord, sorted_tasks)
                 # Assign assistant
                 if len(task_schedules[task][i]) > 0:
                     hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Assist_ord, sorted_tasks)       
@@ -416,16 +419,8 @@ for i in range(14):
 
             else:
                 task_schedules[task][i] = []
-        elif task == "CC10": # not on weekends, only Monday am and Tuesday am may have a doctor, Dr Khalil on Wednesday pm if present, needs a physiologist and an assistant
-            if day == 0 and part == 0 or day == 1 and part == 0 :
-                # try to assign a doctor first
-                hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Doctors_ord, sorted_tasks)
-                if len(task_schedules[task][i]) == 0:
-                    # Assign physiologist
-                    hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Phys_ord, sorted_tasks)
-                # Assign assistant
-                hp.assign_worker(task_schedules, used_workers, i, day, part, task, dispositions, Assist_ord, sorted_tasks)
-            elif day == 2 and part == 1:
+        elif task == "CC10": # not on weekends, Dr Khalil on Wednesday pm if present
+            if day == 2 and part == 1:
                 # Assign Dr Khalil if present
                 if "Dr Khalil" in present_workers:
                     task_schedules[task][i].append("Dr Khalil")
