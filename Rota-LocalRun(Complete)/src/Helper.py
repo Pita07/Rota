@@ -8,7 +8,7 @@ def randomize_dict_keys(d):
     new_dict = {k: d[k] for k in keys}
     return new_dict
 
-# Function to find full days where a worker is available
+# Function to find full days where a worker is available (days are represented as the am part of the actual day)
 def full_days(dispo):
     full_days = []
     for i in range(0, len(dispo), 2):
@@ -87,8 +87,8 @@ def check_student_leave_days(dispositions, Trainees, physios_in):
 
     # determine best days for each trainee to take leave
     for trainee in Trainees:
-        dispo = dispositions[trainee].flatten()
-        days_available = full_days(dispo)
+        dispo = dispositions[trainee].flatten() 
+        days_available = full_days(dispo) # days are represented as the am part of the actual day
         # Try and assign both student leaves in the same day for Priya
         if trainee == "Priya" and days_available.size > 0:
             # Check which day has the most physiologists available
