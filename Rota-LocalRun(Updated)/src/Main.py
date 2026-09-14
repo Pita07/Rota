@@ -15,7 +15,7 @@ import Helper as hp
 root = tk.Tk()
 root.withdraw()  # hides the main window
 
-# Verify files exist
+# Verify that files exist
 if not os.path.exists("Files\\Data Base.xlsx"):
     messagebox.showerror("Error", "Data Base.xlsx file not found.")
     root.quit()
