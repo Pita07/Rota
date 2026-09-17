@@ -14,9 +14,6 @@ At least 2 physiologists on IP Echo (max 4) Monday to Friday			X
 At least 1 physiologists on Analysis (max 3) Monday to Friday	        X
 On Friday CC5 physiologist must be a woman                              X
 
-Dr Elkady when in Monday am only		                                X
-Dr Khalil when in Tuesday am only		                                X   
-
 Nick when in MGMT, unless less than 8 physiologists in					X		
 Gabriel when in CC2 only											    X								
 Dr Alzetani does CC9 when Dr Henein is in on Thursday					X		

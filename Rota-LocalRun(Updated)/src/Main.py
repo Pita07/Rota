@@ -153,20 +153,6 @@ for i in range(1, len(weekly_dataMx)):
         week_dispositions.append(joint)
     dispositions[name] = np.array(week_dispositions)
 
-# Change Dr Elkady and Dr Khalil dispositions to only work on Monday am and Tuesday am respectively
-if "Dr Elkady" in dispositions:
-    # if present monday am, set rest of week to OFF
-    if dispositions["Dr Elkady"][0][0] == "IN":
-        dispositions["Dr Elkady"] = np.array([("IN", "OFF")] + [("OFF", "OFF")] * 6)
-    else: 
-        dispositions["Dr Elkady"] = np.array([("OFF", "OFF")] * 7)
-if "Dr Khalil" in dispositions:
-    # if present tuesday am, set rest of week to OFF
-    if dispositions["Dr Khalil"][1][0] == "IN":
-        dispositions["Dr Khalil"] = np.array([("OFF", "OFF")] + [("IN", "OFF")] + [("OFF", "OFF")] * 5)
-    else: 
-        dispositions["Dr Khalil"] = np.array([("OFF", "OFF")] * 7)
-
 # Print dispositions for debugging
 '''for name, dispo in dispositions.items():
     print(f"{name}:\n {dispo}\n")'''
